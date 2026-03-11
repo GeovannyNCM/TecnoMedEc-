@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TecnoMed · Tienda</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ========== ESTILOS COMPACTOS ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f5fafd;
+            padding: 1rem;
+            color: #1a2e3f;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header compacto */
+        .header-compacto {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #e0eef9;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-area i {
+            font-size: 1.5rem;
+            color: #1d7a8f;
+            background: #e3f2f9;
+            padding: 0.4rem;
+            border-radius: 50%;
+        }
+
+        .logo-area h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        /* Botón admin pequeño */
+        .btn-admin-pequeno {
+            background: #f0f7fc;
+            color: #2c5f70;
+            border: 1px solid #c2ddee;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.1s;
+            text-decoration: none;
+        }
+
+        .btn-admin-pequeno:hover {
+            background: #e1f0fa;
+        }
+
+        /* Modal de login */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-login {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            width: 320px;
+            box-shadow: 0 20px 40px rgba(0,50,70,0.2);
+            border: 1px solid #bddcee;
+        }
+
+        .modal-login h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #0d4151;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-login input {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 1rem;
+            border: 2px solid #d9eaf5;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+
+        .modal-login input:focus {
+            outline: none;
+            border-color: #1f7a8c;
+        }
+
+        .modal-botones {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.2rem;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-ingresar {
+            background: #1f7a8c;
+            color: white;
+        }
+
+        .btn-cerrar {
+            background: #e2edf5;
+            color: #2c5f70;
+        }
+
+        /* Filtros compactos */
+        .filtros-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin: 1rem 0 1.2rem;
+            background: white;
+            padding: 0.8rem 1rem;
+            border-radius: 40px;
+            border: 1px solid #d2e6f2;
+        }
+
+        .btn-categoria {
+            background: transparent;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1d5a6e;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid transparent;
+        }
+
+        .btn-categoria:hover {
+            background: #e1f2fa;
+        }
+
+        .btn-categoria.activo {
+            background: #1f7a8c;
+            color: white;
+        }
+
+        .btn-categoria.activo i {
+            color: white;
+        }
+
+        .btn-categoria i {
+            font-size: 0.8rem;
+            color: #1f7a8c;
+        }
+
+        /* Grid de productos */
+        .categorias-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Clase para ocultar productos (FILTRO) */
+        .hidden-category {
+            display: none !important;
+        }
+
+        /* Tarjetas de producto */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,40,60,0.05);
+            overflow: hidden;
+            border: 1px solid #d4e6f0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(13, 87, 107, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .img-container {
+            width: 100%;
+            height: 120px;
+            background: #eaf3f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 2px solid #e0eef9;
+            position: relative;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cat-icon-overlay {
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            background: rgba(255,255,255,0.95);
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #0c5466;
+            border: 1px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cat-icon-overlay i {
+            font-size: 0.7rem;
+            color: #1f7a8c;
+        }
+
+        .card-content {
+            padding: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nombre-producto {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #103542;
+            line-height: 1.3;
+            height: 2.5rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .precio-stock-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f0f7fc;
+            border-radius: 30px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+        }
+
+        .precio {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #166b7c;
+        }
+
+        .precio small {
+            font-size: 0.6rem;
+            font-weight: 400;
+            color: #4f7b8f;
+        }
+
+        .stock-indicator {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            background: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .stock-indicator.disponible {
+            color: #1c7242;
+            background: #e2ffee;
+        }
+
+        .stock-indicator.agotado {
+            color: #b13e3e;
+            background: #ffe9e9;
+        }
+
+        .control-cantidad {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            border: 1px solid #d0e2f0;
+            border-radius: 30px;
+            padding: 0.1rem 0.1rem 0.1rem 0.8rem;
+        }
+
+        .control-cantidad label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #1b4e5d;
+        }
+
+        .control-cantidad input {
+            width: 50px;
+            border: none;
+            background: #eef7fd;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 0.3rem 0;
+            border-radius: 30px;
+            outline: none;
+        }
+
+        .control-cantidad input:focus {
+            background: #e3f0fa;
+        }
+
+        .btn-wsp {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            margin-top: 0.2rem;
+            transition: background 0.2s;
+        }
+
+        .btn-wsp:hover:not(.disabled-btn) {
+            background: #1fab5a;
+        }
+
+        .btn-wsp i {
+            font-size: 1rem;
+        }
+
+        .disabled-btn {
+            opacity: 0.4;
+            pointer-events: none;
+            background: #98aebb;
+        }
+
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #5f7e8f;
+            text-align: center;
+        }
+
+        .contador-productos {
+            font-size: 0.8rem;
+            color: #1f7a8c;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header compacto con botón admin -->
+    <div class="header-compacto">
+        <div class="logo-area">
+            <i class="fas fa-briefcase-medical"></i>
+            <h1>TecnoMed</h1>
+        </div>
+        <button class="btn-admin-pequeno" id="btnAbrirLogin">
+            <i class="fas fa-user-shield"></i> Admin
+        </button>
+    </div>
+
+<!-- Modal de Login - SIN VALORES POR DEFECTO -->
+<div class="modal-overlay" id="modalLogin">
+    <div class="modal-login">
+        <h3><i class="fas fa-lock"></i> Acceso Admin</h3>
+        <input type="text" id="username" placeholder="Usuario" value="">
+        <input type="password" id="password" placeholder="Contraseña" value="">
+        <div class="modal-botones">
+            <button class="btn-modal btn-ingresar" id="btnIngresar">Ingresar</button>
+            <button class="btn-modal btn-cerrar" id="btnCerrarModal">Cancelar</button>
+        </div>
+    </div>
+</div> 
+
+    <!-- Filtros de categoría -->
+    <div class="filtros-container" id="filtrosCategorias">
+        <!-- Los botones se generan con JS -->
+    </div>
+    
+    <!-- Contador de productos visibles -->
+    <div class="contador-productos" id="contadorProductos">Mostrando todos los productos</div>
+    
+    <!-- Grid de productos -->
+    <div class="categorias-grid" id="appGrid"></div>
+
+    <div class="footer-note">
+        <i class="fas fa-sync-alt"></i> Sincronizado con panel admin
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ========== CONFIGURACIÓN ==========
+        const STORAGE_KEY = 'productos_medicos_admin';
+        const WHATSAPP_NUMBER = "593996234944"; // CAMBIAR POR TU NÚMERO
+        const ADMIN_USER = "Admin";
+        const ADMIN_PASS = "AdminTecno";
+        
+        // ========== ELEMENTOS DOM ==========
+        const modal = document.getElementById('modalLogin');
+        const btnAbrirLogin = document.getElementById('btnAbrirLogin');
+        const btnCerrarModal = document.getElementById('btnCerrarModal');
+        const btnIngresar = document.getElementById('btnIngresar');
+        const username = document.getElementById('username');
+        const password = document.getElementById('password');
+        const grid = document.getElementById('appGrid');
+        const filtrosDiv = document.getElementById('filtrosCategorias');
+        const contadorSpan = document.getElementById('contadorProductos');
+        
+        // ========== VARIABLES GLOBALES ==========
+        let productos = [];
+        let categoriaActiva = 'todas'; // 'todas' o nombre de categoría
+
+        // ========== PRODUCTOS DE RESPALDO ==========
+        const productosRespaldo = [
+            { categoria: "CUIDADOS", icono: "fa-hand-holding-heart", producto: "Crema Barrera Zinco 250g", precio: 12450, stock: 8, unidad: "pote", imagen: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80" },
+            { categoria: "CUIDADOS", icono: "fa-hand-holding-heart", producto: "Apósitos estériles 10x10", precio: 3200, stock: 15, unidad: "caja", imagen: "https://images.unsplash.com/photo-1584308972272-9e4e7685e80f?w=400&q=80" },
+            { categoria: "DIAGNÓSTICO", icono: "fa-stethoscope", producto: "Estetoscopio Profesional", precio: 38900, stock: 5, unidad: "unidad", imagen: "https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=400&q=80" },
+            { categoria: "DIAGNÓSTICO", icono: "fa-stethoscope", producto: "Esfigmomanómetro", precio: 25750, stock: 7, unidad: "unidad", imagen: "https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=400&q=80" },
+            { categoria: "EMERGENCIA", icono: "fa-truck-medical", producto: "Camilla Plegable", precio: 184500, stock: 2, unidad: "unidad", imagen: "https://images.unsplash.com/photo-1582719508461-905c6734fd2e?w=400&q=80" },
+            { categoria: "EMERGENCIA", icono: "fa-truck-medical", producto: "Botiquín Maletín", precio: 22400, stock: 9, unidad: "equipo", imagen: "https://images.unsplash.com/photo-1582719508461-905c6734fd2e?w=400&q=80" },
+            { categoria: "EQUIPOS", icono: "fa-lungs", producto: "Concentrador Oxígeno 5L", precio: 625000, stock: 3, unidad: "equipo", imagen: "https://images.unsplash.com/photo-1582719508461-905c6734fd2e?w=400&q=80" },
+            { categoria: "EQUIPOS", icono: "fa-lungs", producto: "Nebulizador Compresor", precio: 38700, stock: 11, unidad: "unidad", imagen: "https://images.unsplash.com/photo-1582719508461-905c6734fd2e?w=400&q=80" },
+            { categoria: "INSTRUMENTAL", icono: "fa-scalpel", producto: "Kit Cirugía Menor", precio: 35750, stock: 12, unidad: "kit", imagen: "https://images.unsplash.com/photo-1581595220892-b8c465b1a3d4?w=400&q=80" },
+            { categoria: "INSTRUMENTAL", icono: "fa-scalpel", producto: "Pinzas Kelly", precio: 8900, stock: 23, unidad: "par", imagen: "https://images.unsplash.com/photo-1581595220892-b8c465b1a3d4?w=400&q=80" },
+            { categoria: "INSUMOS", icono: "fa-syringe", producto: "Jeringas 10ml x100", precio: 18990, stock: 25, unidad: "caja", imagen: "https://images.unsplash.com/photo-1584308972272-9e4e7685e80f?w=400&q=80" },
+            { categoria: "INSUMOS", icono: "fa-syringe", producto: "Gasas Estériles x500", precio: 15300, stock: 32, unidad: "paquete", imagen: "https://images.unsplash.com/photo-1584308972272-9e4e7685e80f?w=400&q=80" },
+            { categoria: "MOBILIARIO", icono: "fa-couch", producto: "Sillón de Exploración", precio: 312000, stock: 0, unidad: "unidad", imagen: "https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=400&q=80" },
+            { categoria: "MOBILIARIO", icono: "fa-couch", producto: "Carro de Paro", precio: 189000, stock: 4, unidad: "unidad", imagen: "https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=400&q=80" },
+            { categoria: "INDUMENTARIA", icono: "fa-tshirt", producto: "Camisolín x10", precio: 8450, stock: 40, unidad: "paquete", imagen: "https://images.unsplash.com/photo-1581595220892-b8c465b1a3d4?w=400&q=80" },
+            { categoria: "INDUMENTARIA", icono: "fa-tshirt", producto: "Gorro Quirúrgico x50", precio: 6200, stock: 17, unidad: "bolsa", imagen: "https://images.unsplash.com/photo-1581595220892-b8c465b1a3d4?w=400&q=80" }
+        ];
+
+        // ========== FUNCIONES DE LOGIN ==========
+        btnAbrirLogin.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+        
+        btnCerrarModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        btnIngresar.addEventListener('click', () => {
+            if (username.value === ADMIN_USER && password.value === ADMIN_PASS) {
+                modal.style.display = 'none';
+                window.open('admin.html', '_blank');
+            } else {
+                alert('Usuario o contraseña incorrectos');
+            }
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // ========== CARGAR PRODUCTOS ==========
+        function cargarProductos() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    productos = JSON.parse(stored);
+                    console.log('Productos cargados desde admin:', productos.length);
+                } else {
+                    productos = [...productosRespaldo];
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(productos));
+                    console.log('Productos de respaldo cargados');
+                }
+            } catch (error) {
+                console.error('Error cargando productos:', error);
+                productos = [...productosRespaldo];
+            }
+            
+            renderizarFiltros();
+            renderizarTarjetas();
+        }
+
+        // ========== RENDERIZAR FILTROS ==========
+        function renderizarFiltros() {
+            const categorias = [...new Set(productos.map(p => p.categoria))].sort();
+            
+            let html = `
+                <button class="btn-categoria ${categoriaActiva === 'todas' ? 'activo' : ''}" data-categoria="todas">
+                    <i class="fas fa-border-all"></i> Todos
+                </button>
+            `;
+            
+            categorias.forEach(cat => {
+                const prodEjemplo = productos.find(p => p.categoria === cat);
+                const icono = prodEjemplo?.icono || 'fa-tag';
+                html += `
+                    <button class="btn-categoria ${categoriaActiva === cat ? 'activo' : ''}" data-categoria="${cat}">
+                        <i class="fas ${icono}"></i> ${cat}
+                    </button>
+                `;
+            });
+            
+            filtrosDiv.innerHTML = html;
+            
+            // Agregar eventos a los botones de filtro
+            document.querySelectorAll('.btn-categoria').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const categoria = this.dataset.categoria;
+                    categoriaActiva = categoria;
+                    
+                    // Actualizar clase activa
+                    document.querySelectorAll('.btn-categoria').forEach(b => b.classList.remove('activo'));
+                    this.classList.add('activo');
+                    
+                    // Aplicar filtro
+                    aplicarFiltro();
+                });
+            });
+        }
+
+        // ========== APLICAR FILTRO ==========
+        function aplicarFiltro() {
+            const tarjetas = document.querySelectorAll('.card');
+            let productosVisibles = 0;
+            
+            tarjetas.forEach(card => {
+                const catCard = card.dataset.categoria;
+                
+                if (categoriaActiva === 'todas' || catCard === categoriaActiva) {
+                    card.classList.remove('hidden-category');
+                    productosVisibles++;
+                } else {
+                    card.classList.add('hidden-category');
+                }
+            });
+            
+            // Actualizar contador
+            if (categoriaActiva === 'todas') {
+                contadorSpan.textContent = `Mostrando todos los productos (${productosVisibles})`;
+            } else {
+                contadorSpan.textContent = `Mostrando ${categoriaActiva}: ${productosVisibles} productos`;
+            }
+        }
+
+        // ========== RENDERIZAR TARJETAS ==========
+        function renderizarTarjetas() {
+            if (!grid) return;
+            
+            if (productos.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">No hay productos disponibles</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            productos.forEach((prod, idx) => {
+                const tieneStock = prod.stock > 0;
+                const stockClass = tieneStock ? 'disponible' : 'agotado';
+                const stockIcon = tieneStock ? 'fa-check-circle' : 'fa-times-circle';
+                const stockText = tieneStock ? prod.stock : 'SIN STOCK';
+                
+                html += `
+                    <div class="card" data-categoria="${prod.categoria}" data-indice="${idx}">
+                        <div class="img-container">
+                            <img src="${prod.imagen}" alt="${prod.producto}" loading="lazy" 
+                                 onerror="this.src='https://placehold.co/300x200/dfeef8/3b7e9c?text=${encodeURIComponent(prod.categoria)}'">
+                            <span class="cat-icon-overlay">
+                                <i class="fas ${prod.icono || 'fa-tag'}"></i> ${prod.categoria}
+                            </span>
+                        </div>
+                        <div class="card-content">
+                            <div class="nombre-producto">${prod.producto}</div>
+                            <div class="precio-stock-row">
+                                <span class="precio">$${prod.precio.toLocaleString('es-AR')} <small>/${prod.unidad || 'unidad'}</small></span>
+                                <span class="stock-indicator ${stockClass}">
+                                    <i class="fas ${stockIcon}"></i> ${stockText}
+                                </span>
+                            </div>
+                            <div class="control-cantidad">
+                                <label><i class="fas fa-sort-numeric-up"></i> Cant</label>
+                                <input type="number" class="input-cantidad" value="1" min="1" max="${prod.stock}" 
+                                    ${tieneStock ? '' : 'disabled'} 
+                                    data-index="${idx}"
+                                    data-precio="${prod.precio}" 
+                                    data-producto="${prod.producto}"
+                                    data-stock="${prod.stock}">
+                            </div>
+                            <button class="btn-wsp ${tieneStock ? '' : 'disabled-btn'}" 
+                                    data-index="${idx}" 
+                                    data-producto="${prod.producto}" 
+                                    data-precio="${prod.precio}" 
+                                    data-stock="${prod.stock}">
+                                <i class="fab fa-whatsapp"></i> Pedir
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
+            
+            // Aplicar filtro actual
+            aplicarFiltro();
+            
+            // Asignar eventos
+            asignarEventosWSP();
+            asignarEventosInputs();
+        }
+
+        // ========== EVENTOS WHATSAPP ==========
+        function asignarEventosWSP() {
+            document.querySelectorAll('.btn-wsp:not(.disabled-btn)').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const idx = this.dataset.index;
+                    const producto = this.dataset.producto;
+                    const precioUnit = parseFloat(this.dataset.precio);
+                    const stockMax = parseInt(this.dataset.stock);
+                    
+                    const inputCant = document.querySelector(`.input-cantidad[data-index="${idx}"]`);
+                    if (!inputCant) return;
+                    
+                    let cantidad = parseInt(inputCant.value);
+                    if (isNaN(cantidad) || cantidad < 1) cantidad = 1;
+                    if (cantidad > stockMax) cantidad = stockMax;
+                    inputCant.value = cantidad;
+                    
+                    const total = precioUnit * cantidad;
+                    
+                    const mensaje = `🛒 *Pedido Médico*%0A` +
+                                    `▪️ *Producto:* ${producto}%0A` +
+                                    `▪️ *Cantidad:* ${cantidad}%0A` +
+                                    `▪️ *Total:* $${total.toLocaleString('es-AR')}`;
+                    
+                    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`, '_blank');
+                });
+            });
+        }
+
+        // ========== VALIDACIÓN DE INPUTS ==========
+        function asignarEventosInputs() {
+            document.querySelectorAll('.input-cantidad').forEach(inp => {
+                inp.addEventListener('change', function() {
+                    const max = parseInt(this.max);
+                    let val = parseInt(this.value);
+                    if (isNaN(val) || val < 1) val = 1;
+                    if (val > max) val = max;
+                    this.value = val;
+                });
+                
+                inp.addEventListener('input', function() {
+                    let val = parseInt(this.value);
+                    const max = parseInt(this.max);
+                    if (!isNaN(val) && val > max) this.value = max;
+                    else if (!isNaN(val) && val < 1) this.value = 1;
+                });
+            });
+        }
+
+        // ========== ESCUCHAR CAMBIOS EN LOCALSTORAGE ==========
+        window.addEventListener('storage', (e) => {
+            if (e.key === STORAGE_KEY) {
+                console.log('Cambios detectados, actualizando...');
+                cargarProductos();
+            }
+        });
+
+        // ========== INICIALIZAR ==========
+        cargarProductos();
+        
+    })();
+    // Al abrir el modal, enfocar el campo usuario
+btnAbrirLogin.addEventListener('click', () => {
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        document.getElementById('username').focus();
+    }, 100);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedicalBuy · Admin</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ========== ESTILOS ADMIN COMPACTOS ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #eef3f8;
+            padding: 1rem;
+            color: #153e4d;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header compacto */
+        .admin-header {
+            background: white;
+            border-radius: 30px;
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #cde3f0;
+        }
+
+        .admin-header h1 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-header h1 i {
+            background: #1f7a8c;
+            color: white;
+            padding: 0.4rem;
+            border-radius: 50%;
+            font-size: 1rem;
+        }
+
+        .tienda-link {
+            background: #f0f7fc;
+            color: #1f7a8c;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #c2ddee;
+        }
+
+        /* Panel grid más compacto */
+        .admin-panels {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        /* Formulario compacto */
+        .form-card {
+            background: white;
+            border-radius: 25px;
+            padding: 1.2rem;
+            border: 1px solid #cde0ec;
+            position: sticky;
+            top: 1rem;
+        }
+
+        .form-card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 0.8rem;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .form-group label i {
+            margin-right: 4px;
+            font-size: 0.8rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d0e5f2;
+            border-radius: 30px;
+            font-size: 0.85rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .btn-admin {
+            background: #1f7a8c;
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: #e1f0f7;
+            color: #145d70;
+        }
+
+        /* Lista de productos compacta */
+        .productos-list {
+            background: white;
+            border-radius: 25px;
+            padding: 1.2rem;
+            border: 1px solid #cde0ec;
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .list-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .total-stock {
+            background: #def0f8;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        th {
+            background: #e5f3fb;
+            padding: 0.6rem;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.6rem;
+            border-bottom: 1px solid #e2f0f8;
+        }
+
+        .producto-imagen-td img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .acciones-td {
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .btn-accion {
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-editar {
+            color: #1c6b8c;
+            background: #e1f2fe;
+        }
+
+        .btn-eliminar {
+            color: #b13e3e;
+            background: #ffe2e2;
+        }
+
+        .badge-cat {
+            background: #cbe5f0;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .stock-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            background: #dcf5e5;
+            color: #196f45;
+        }
+
+        .stock-badge.agotado {
+            background: #fbe5e5;
+            color: #ac3939;
+        }
+
+        .footer-admin {
+            margin-top: 1.5rem;
+            background: #cbe2ef;
+            border-radius: 30px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .btn-descarga {
+            background: white;
+            border: 1px solid #1f7a8c;
+            color: #1f7a8c;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="admin-container">
+    <!-- Header compacto -->
+    <div class="admin-header">
+        <h1>
+            <i class="fas fa-user-shield"></i> 
+            Panel Admin
+        </h1>
+        <a href="index.html" class="tienda-link" target="_blank">
+            <i class="fas fa-store"></i> Ver Tienda
+        </a>
+    </div>
+
+    <!-- Panel principal compacto -->
+    <div class="admin-panels">
+        <!-- Formulario compacto -->
+        <div class="form-card">
+            <h2><i class="fas fa-plus-circle"></i> <span id="formTitle">Nuevo producto</span></h2>
+            
+            <form id="productoForm">
+                <input type="hidden" id="editIndex" value="-1">
+
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Categoría</label>
+                    <select id="categoria" class="form-control" required>
+                        <option value="" disabled selected>-- Seleccionar --</option>
+                        <option value="CUIDADOS">CUIDADOS</option>
+                        <option value="DIAGNÓSTICO">DIAGNÓSTICO</option>
+                        <option value="EMERGENCIA">EMERGENCIA</option>
+                        <option value="EQUIPOS">EQUIPOS</option>
+                        <option value="INSTRUMENTAL">INSTRUMENTAL</option>
+                        <option value="INSUMOS">INSUMOS</option>
+                        <option value="MOBILIARIO">MOBILIARIO</option>
+                        <option value="INDUMENTARIA">INDUMENTARIA</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-cube"></i> Producto</label>
+                    <input type="text" id="nombre" class="form-control" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-dollar-sign"></i> Precio</label>
+                        <input type="number" id="precio" class="form-control" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-boxes"></i> Stock</label>
+                        <input type="number" id="stock" class="form-control" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> URL Imagen</label>
+                    <input type="url" id="imagen" class="form-control" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-balance-scale"></i> Unidad</label>
+                        <input type="text" id="unidad" class="form-control" value="unidad" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-icons"></i> Icono</label>
+                        <select id="icono" class="form-control" required>
+                            <option value="fa-hand-holding-heart">Cuidados</option>
+                            <option value="fa-stethoscope">Diagnóstico</option>
+                            <option value="fa-truck-medical">Emergencia</option>
+                            <option value="fa-lungs">Equipos</option>
+                            <option value="fa-scalpel">Instrumental</option>
+                            <option value="fa-syringe">Insumos</option>
+                            <option value="fa-couch">Mobiliario</option>
+                            <option value="fa-tshirt">Indumentaria</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-admin" id="btnSubmit">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+                <button type="button" class="btn-admin btn-secondary" id="btnCancelar" style="display: none;">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </form>
+        </div>
+
+        <!-- Lista de productos compacta -->
+        <div class="productos-list">
+            <div class="list-header">
+                <h2><i class="fas fa-list"></i> Productos</h2>
+                <span class="total-stock" id="totalProductos">0</span>
+            </div>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Img</th>
+                            <th>Categoría</th>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productosTbody">
+                        <tr><td colspan="6" style="text-align: center;">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                <button class="btn-descarga" id="cargarEjemplo"><i class="fas fa-flask"></i> Ejemplos</button>
+                <button class="btn-descarga" id="exportarJSON"><i class="fas fa-download"></i> Exportar</button>
+                <button class="btn-descarga" id="importarJSON"><i class="fas fa-upload"></i> Importar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer compacto -->
+    <div class="footer-admin">
+        <span><i class="fas fa-shield-alt"></i> Auto-guardado</span>
+        <span><i class="fas fa-sync-alt"></i> Sincronizado con tienda</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const STORAGE_KEY = 'productos_medicos_admin';
+        
+        // Productos ejemplo compactos
+        const productosEjemplo = [
+            { categoria: "CUIDADOS", icono: "fa-hand-holding-heart", producto: "Crema Barrera Zinco", precio: 12450, stock: 8, unidad: "pote", imagen: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80" },
+            { categoria: "DIAGNÓSTICO", icono: "fa-stethoscope", producto: "Estetoscopio", precio: 38900, stock: 5, unidad: "unidad", imagen: "https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=400&q=80" },
+            { categoria: "EMERGENCIA", icono: "fa-truck-medical", producto: "Camilla Plegable", precio: 184500, stock: 2, unidad: "unidad", imagen: "https://images.unsplash.com/photo-1582719508461-905c6734fd2e?w=400&q=80" }
+        ];
+
+        let productos = [];
+        
+        // Elementos DOM
+        const tbody = document.getElementById('productosTbody');
+        const totalSpan = document.getElementById('totalProductos');
+        const form = document.getElementById('productoForm');
+        const editIndex = document.getElementById('editIndex');
+        const formTitle = document.getElementById('formTitle');
+        const btnCancelar = document.getElementById('btnCancelar');
+        
+        // Campos
+        const campos = {
+            categoria: document.getElementById('categoria'),
+            nombre: document.getElementById('nombre'),
+            precio: document.getElementById('precio'),
+            stock: document.getElementById('stock'),
+            imagen: document.getElementById('imagen'),
+            unidad: document.getElementById('unidad'),
+            icono: document.getElementById('icono')
+        };
+
+        // Cargar productos
+        function cargarStorage() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                productos = stored ? JSON.parse(stored) : [...productosEjemplo];
+            } catch {
+                productos = [...productosEjemplo];
+            }
+            guardarStorage();
+            actualizarTabla();
+        }
+
+        function guardarStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(productos));
+        }
+
+        // Actualizar tabla compacta
+        function actualizarTabla() {
+            if (productos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">Sin productos</td></tr>`;
+                totalSpan.innerText = '0';
+                return;
+            }
+
+            let html = '';
+            productos.forEach((prod, idx) => {
+                const stockClass = prod.stock > 0 ? '' : 'agotado';
+                const stockText = prod.stock > 0 ? prod.stock : 'SIN';
+                
+                html += `<tr>
+                    <td class="producto-imagen-td"><img src="${prod.imagen}" onerror="this.src='https://placehold.co/100x100/dfeef8/3b7e9c?text=IMG'"></td>
+                    <td><span class="badge-cat"><i class="fas ${prod.icono || 'fa-tag'}"></i> ${prod.categoria}</span></td>
+                    <td><strong>${prod.producto}</strong></td>
+                    <td>$${prod.precio.toLocaleString()}</td>
+                    <td><span class="stock-badge ${stockClass}">${stockText}</span></td>
+                    <td class="acciones-td">
+                        <button class="btn-accion btn-editar" onclick="editarProducto(${idx})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-accion btn-eliminar" onclick="eliminarProducto(${idx})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = html;
+            totalSpan.innerText = productos.length;
+        }
+
+        // Funciones globales
+        window.editarProducto = function(index) {
+            const prod = productos[index];
+            campos.categoria.value = prod.categoria;
+            campos.nombre.value = prod.producto;
+            campos.precio.value = prod.precio;
+            campos.stock.value = prod.stock;
+            campos.imagen.value = prod.imagen;
+            campos.unidad.value = prod.unidad || 'unidad';
+            campos.icono.value = prod.icono || 'fa-box';
+            
+            editIndex.value = index;
+            formTitle.innerText = 'Editar';
+            btnCancelar.style.display = 'block';
+        };
+
+        window.eliminarProducto = function(index) {
+            if (confirm('¿Eliminar?')) {
+                productos.splice(index, 1);
+                guardarStorage();
+                actualizarTabla();
+                if (parseInt(editIndex.value) === index) cancelarEdicion();
+            }
+        };
+
+        function cancelarEdicion() {
+            form.reset();
+            editIndex.value = '-1';
+            formTitle.innerText = 'Nuevo producto';
+            btnCancelar.style.display = 'none';
+            campos.unidad.value = 'unidad';
+        }
+
+        // Evento submit
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const nuevoProducto = {
+                categoria: campos.categoria.value,
+                producto: campos.nombre.value.trim(),
+                precio: parseFloat(campos.precio.value),
+                stock: parseInt(campos.stock.value),
+                imagen: campos.imagen.value.trim(),
+                unidad: campos.unidad.value.trim(),
+                icono: campos.icono.value,
+            };
+
+            const indexEdit = parseInt(editIndex.value);
+            if (indexEdit >= 0) {
+                productos[indexEdit] = nuevoProducto;
+            } else {
+                productos.push(nuevoProducto);
+            }
+            
+            guardarStorage();
+            actualizarTabla();
+            cancelarEdicion();
+        });
+
+        btnCancelar.addEventListener('click', cancelarEdicion);
+
+        // Botones adicionales
+        document.getElementById('cargarEjemplo').addEventListener('click', () => {
+            productos = [...productos, ...productosEjemplo];
+            guardarStorage();
+            actualizarTabla();
+        });
+
+        document.getElementById('exportarJSON').addEventListener('click', () => {
+            const blob = new Blob([JSON.stringify(productos, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `productos.json`;
+            a.click();
+        });
+
+        document.getElementById('importarJSON').addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        productos = JSON.parse(event.target.result);
+                        guardarStorage();
+                        actualizarTabla();
+                    } catch (error) {
+                        alert('Error al importar');
+                    }
+                };
+                reader.readAsText(e.target.files[0]);
+            };
+            input.click();
+        });
+
+        // Inicializar
+        cargarStorage();
+    })();
+</script>
+</body>
+</html>
